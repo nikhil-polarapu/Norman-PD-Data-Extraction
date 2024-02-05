@@ -9,13 +9,13 @@ def main(url):
     incidents = assignment0.extractincidents(incident_data)
 	
     # Create new database
-    #db = assignment0.createdb()
+    db = assignment0.createdb()
 	
     # Insert data
-    #assignment0.populatedb(db, incidents)
+    assignment0.populatedb(db, incidents)
 	
     # Print incident counts
-    #assignment0.status(db)
+    assignment0.status(db)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
