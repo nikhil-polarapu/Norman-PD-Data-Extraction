@@ -98,7 +98,6 @@ def status(db):
         GROUP BY nature
         ORDER BY count DESC, nature
     ''')
-    print("Nature|Count")
     for row in cursor.fetchall():
         nature, count = row
         print(f"{nature}|{count}")
