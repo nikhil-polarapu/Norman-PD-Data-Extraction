@@ -76,7 +76,7 @@ def createdb():
     database_path = os.path.join('resources', 'normanpd.db')
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
-    drop_table = ''' DROP TABLE incidents; '''
+    drop_table = ''' DROP TABLE IF EXISTS incidents; '''
     create_table = '''
         CREATE TABLE  incidents (
             incident_time TEXT,
