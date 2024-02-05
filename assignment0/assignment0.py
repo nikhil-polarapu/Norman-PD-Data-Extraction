@@ -18,11 +18,10 @@ def extractincidents(data):
         reader = PdfReader(data)
         for page_num in range(len(reader.pages)):
             page = reader._get_page(page_num)
-            page_text = page.extract_text()
+            page_text = page.extract_text(extraction_mode='layout')
             lines = page_text.split("\n")
-
             for line in lines:
-
+                line = line.strip()
                 if("NORMAN POLICE DEPARTMENT" in line):
                     line = line.replace("NORMAN POLICE DEPARTMENT", '')
                 if("Daily Incident Summary (Public)" in line):
@@ -39,7 +38,7 @@ def extractincidents(data):
                     datetime_result = datetime_match.group()
                     output.append(datetime_result)
                     line = line.replace(datetime_result, '')
-
+                    
                 incident_number_pattern = r'\d{4}-\d+'
                 incident_number_match = re.search(incident_number_pattern, line)
 
@@ -47,29 +46,18 @@ def extractincidents(data):
                     incident_number_result = incident_number_match.group()
                     output.append(incident_number_result)
                     line = line.replace(incident_number_result, '')
-                else:
-                    output.append('')
-                
-                location_remaining_list = line.split(" ")
-                location = ""
-                for i in location_remaining_list:
-                    small_letter_pattern = re.compile(r'^[^a-z]*$')
-                    if (bool(small_letter_pattern.match(i))):
-                        location += i + " "
-                    else:
-                        break
-                output.append(location.strip())
-                
-                line = line.replace(location.strip(), '')
+                if(line):
+                    remaining_line = re.split(r'\s{2,}', line.strip())
+                    if(len(remaining_line) == 3):
+                        location = remaining_line[0]
+                        output.append(location)
+                        nature = remaining_line[1]
+                        output.append(nature)
+                        incident_ori = remaining_line[2]
+                        output.append(incident_ori)
 
-                remaining_lines = line.strip().split(" ")
-                incident_ori = remaining_lines.pop()
-                nature = " ".join(remaining_lines)
-                output.append(nature)
-                output.append(incident_ori)
                 if(not (len(output) < 5)):
                     row_list.append(output)
-
         return row_list
 
 def createdb():
