@@ -14,14 +14,19 @@ def fetchincidents(url):
        return io.BytesIO(data)                                                                         
 
 def extractincidents(data):
+
         row_list = []
         reader = PdfReader(data)
+
         for page_num in range(len(reader.pages)):
             page = reader._get_page(page_num)
             page_text = page.extract_text(extraction_mode='layout')
             lines = page_text.split("\n")
+
             for line in lines:
+
                 line = line.strip()
+                
                 if("NORMAN POLICE DEPARTMENT" in line):
                     line = line.replace("NORMAN POLICE DEPARTMENT", '')
                 if("Daily Incident Summary (Public)" in line):
@@ -34,7 +39,7 @@ def extractincidents(data):
                 datetime_pattern = r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}'
                 datetime_match = re.search(datetime_pattern, line)
 
-                if datetime_match:
+                if(datetime_match):
                     datetime_result = datetime_match.group()
                     output.append(datetime_result)
                     line = line.replace(datetime_result, '')
@@ -42,7 +47,7 @@ def extractincidents(data):
                 incident_number_pattern = r'\d{4}-\d+'
                 incident_number_match = re.search(incident_number_pattern, line)
 
-                if incident_number_match:
+                if(incident_number_match):
                     incident_number_result = incident_number_match.group()
                     output.append(incident_number_result)
                     line = line.replace(incident_number_result, '')
