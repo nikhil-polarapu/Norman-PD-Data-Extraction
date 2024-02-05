@@ -84,7 +84,6 @@ def populatedb(db, incidents):
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
     for row in incidents:
-        print(row)
         cursor.execute('INSERT INTO incidents (incident_time, incident_number, incident_location, nature, incident_ori) VALUES (?, ?, ?, ?, ?)', row)
     connection.commit()
     connection.close()
