@@ -31,14 +31,7 @@ def extractincidents(data):
                     line = line.replace("Date / Time Incident Number Location Nature Incident ORI", '')
                 
                 output = []
-                # pattern = r'([\d/]+ [\d:]+) (\S+) (\S+) (.+?) ([^\s]+) (\S+) (\S+)'
-                # match = re.match(pattern, line.strip())
-                # if match:
-                #     groups = match.groups()
-                #     groups = list(groups)
-                #     groups[4] = ' '.join(groups[4:6])
-                #     groups.pop(5) 
-                #     row_list.append(groups)
+                
                 datetime_pattern = r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}'
                 datetime_match = re.search(datetime_pattern, line)
 
@@ -77,7 +70,6 @@ def extractincidents(data):
                 if(not (len(output) < 5)):
                     row_list.append(output)
 
-        print(row_list)
         return row_list
 
 def createdb():
@@ -99,8 +91,6 @@ def createdb():
     connection.commit()
     connection.close()
 
-    print("Database creation successful")
-
 def populatedb(db, incidents):
     database_path = os.path.join('resources', 'normanpd.db')
     connection = sqlite3.connect(database_path)
@@ -110,8 +100,6 @@ def populatedb(db, incidents):
         cursor.execute('INSERT INTO incidents (incident_time, incident_number, incident_location, nature, incident_ori) VALUES (?, ?, ?, ?, ?)', row)
     connection.commit()
     connection.close()
-
-    print("Data inserted")
 
 def status(db):
     database_path = os.path.join('resources', 'normanpd.db')
