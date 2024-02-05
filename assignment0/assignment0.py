@@ -55,6 +55,11 @@ def extractincidents(data):
                         output.append(nature)
                         incident_ori = remaining_line[2]
                         output.append(incident_ori)
+                    else:
+                        if(remaining_line[0].startswith('OK')):
+                            output.append('')
+                            output.append('')
+                            output.append(remaining_line[0])
 
                 if(not (len(output) < 5)):
                     row_list.append(output)
