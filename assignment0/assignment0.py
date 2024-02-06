@@ -5,6 +5,7 @@ from pypdf import PdfReader
 import sqlite3
 import os
 
+# Function to fetch data from URL
 def fetchincidents(url):
        url = (url)
        headers = {}
@@ -13,6 +14,7 @@ def fetchincidents(url):
        data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()  
        return io.BytesIO(data)                                                                         
 
+# Function to extract tabular data from the result of fetchincidents
 def extractincidents(data):
 
         row_list = []
@@ -26,7 +28,7 @@ def extractincidents(data):
             for line in lines:
 
                 line = line.strip()
-                
+
                 if("NORMAN POLICE DEPARTMENT" in line):
                     line = line.replace("NORMAN POLICE DEPARTMENT", '')
                 if("Daily Incident Summary (Public)" in line):
@@ -36,6 +38,7 @@ def extractincidents(data):
                 
                 output = []
                 
+                # Extracting date
                 datetime_pattern = r'\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}'
                 datetime_match = re.search(datetime_pattern, line)
 
@@ -44,6 +47,7 @@ def extractincidents(data):
                     output.append(datetime_result)
                     line = line.replace(datetime_result, '')
                     
+                # Extracting incident number
                 incident_number_pattern = r'\d{4}-\d+'
                 incident_number_match = re.search(incident_number_pattern, line)
 
@@ -51,6 +55,8 @@ def extractincidents(data):
                     incident_number_result = incident_number_match.group()
                     output.append(incident_number_result)
                     line = line.replace(incident_number_result, '')
+
+                # Extracting location, nature and incident_ori
                 if(line):
                     remaining_line = re.split(r'\s{2,}', line.strip())
                     if(len(remaining_line) == 3):
@@ -70,11 +76,17 @@ def extractincidents(data):
                     row_list.append(output)
         return row_list
 
+# Function to create normanpd.db
 def createdb():
+
     database_path = os.path.join('resources', 'normanpd.db')
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
+
+    # Drop the table if it already exists
     drop_table = ''' DROP TABLE IF EXISTS incidents; '''
+
+    # Query to create a table
     create_table = '''
         CREATE TABLE  incidents (
             incident_time TEXT,
@@ -89,7 +101,9 @@ def createdb():
     connection.commit()
     connection.close()
 
+# Function to populate data
 def populatedb(db, incidents):
+
     database_path = os.path.join('resources', 'normanpd.db')
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
@@ -98,6 +112,7 @@ def populatedb(db, incidents):
     connection.commit()
     connection.close()
 
+# Function to get nature count
 def status(db):
     database_path = os.path.join('resources', 'normanpd.db')
     connection = sqlite3.connect(database_path)
@@ -108,7 +123,10 @@ def status(db):
         GROUP BY nature
         ORDER BY count DESC, CASE WHEN nature = '' THEN 1 ELSE 0 END, nature
     ''')
+    output_list = []
     for row in cursor.fetchall():
         nature, count = row
         print(f"{nature}|{count}")
+        output_list.append([nature, count])
     connection.close()
+    return output_list
