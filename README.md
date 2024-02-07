@@ -30,7 +30,7 @@ We populate this table with the data extracted from the page. The final aim of t
 - pipenv run python assignment0/main.py --incidents https://www.normanok.gov/sites/default/files/documents/2024-02/2024-02-01_daily_incident_summary.pdf
 - pipenv run python -m pytest
 
-![DE Assignment0 Demo](/DE%20Assignment0.gif)
+![DE Assignment0 Demo](/DE%20Assignment0%20Demo.gif)
 
 
 ## Functions
