@@ -21,6 +21,7 @@ We populate this table with the data extracted from the page. The final aim of t
 - curl https://pyenv.run | bash
 - pyenv install 3.11
 - pyenv global 3.11
+- pip install pipenv
 - pipenv install pypdf
 - pipenv install pytest
 
