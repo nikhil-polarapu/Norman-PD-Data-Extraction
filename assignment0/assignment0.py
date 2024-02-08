@@ -121,7 +121,7 @@ def status(db):
         SELECT nature, COUNT(*) as count
         FROM incidents
         GROUP BY nature
-        ORDER BY count DESC, CASE WHEN nature = '' THEN 1 ELSE 0 END, nature
+        ORDER BY count DESC, nature
     ''')
     output_list = []
     for row in cursor.fetchall():
